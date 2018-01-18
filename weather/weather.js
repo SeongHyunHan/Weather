@@ -2,22 +2,22 @@ const request = require('request');
 
 const apiKey = '14a55753cf461095c54f71594d34f45b';
 
-var getWeather = (latitude, longitude, callback) => {
-    request({
-        url:`https://api.forecast.io/forecast/${apiKey}/${latitude},${longitude}`,
-        json: true
-    }, (err, res, body) => {
-        if(!err && res.statusCode === 200){
-            callback(undefined, {
-                temperature: body.currently.temperature,
-                apparentTemperature: body.currently.apparentTemperature
-            });
-        }else{
-           callback('Unable to Fetch Weather');
-        }
-    });
+var getWeather = (lat, lng, callback) => {
+  request({
+    url: `https://api.forecast.io/forecast/${apiKey} /${lat},${lng}`,
+    json: true
+  }, (error, response, body) => {
+    if (error) {
+      callback('Unable to connect to Forecast.io server.');
+    } else if (response.statusCode === 400) {
+      callback('Unable to fetch weather.');
+    } else if (response.statusCode === 200) {
+      callback(undefined, {
+        temperature: body.currently.temperature,
+        apparentTemperature: body.currently.apparentTemperature
+      });
+    }
+  });
 };
 
-module.exports = {
-    getWeather
-}
+module.exports.getWeather = getWeather;
